@@ -13,22 +13,22 @@ public interface DeptService {
     List<Dept> findAll();
 
     /*
-     * 根据ID删除部门
-     * */
+    * 根据ID删除部门
+    * */
     void deleteById(Integer id);
 
     /*
-     *  新增部门
-     * */
+    *  新增部门
+    * */
     void insert(Dept dept);
 
     /*
-     * 根据ID查询数据
-     * */
+    * 根据ID查询数据
+    * */
     Dept getById(Integer id);
 
     /*
-     * 根据id，姓名查询数据
-     * */
+    * 根据id，姓名查询数据
+    * */
     void update(Dept dept);
 }

@@ -1,7 +1,7 @@
 package org.example.controller;
 
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
+import org.example.anno.Log;
 import org.example.pojo.Dept;
 import org.example.pojo.Result;
 import org.example.service.DeptService;
@@ -18,7 +18,6 @@ public class DeptController {
     @Autowired
     private DeptService deptService;
 
-    //    @RequestMapping(value = "/depts", method = RequestMethod.GET)
     @GetMapping
     public Result list(){
         System.out.println("查询全部部门数据");
@@ -29,6 +28,7 @@ public class DeptController {
     /*
      * 根据id删除部门
      * */
+    @Log
     @DeleteMapping
     //RequestParam中参数是前端传递过来的参数名id
     //再把id绑定给depId
@@ -43,7 +43,6 @@ public class DeptController {
      * */
     @Log
     @PostMapping
-    @Permission("dept.create")
     public Result insert(@RequestBody Dept dept){
         deptService.insert(dept);
         System.out.println("插入部门id: " + dept);
@@ -54,7 +53,6 @@ public class DeptController {
      * 根据id查询部门
      * */
     @GetMapping("/{id}")
-
     public Result getInfo(@PathVariable Integer id){
         Dept dept = deptService.getById(id);
         System.out.println("根据id查询的数据：" + dept);
@@ -64,6 +62,7 @@ public class DeptController {
     /*
      * 修改部门
      * */
+    @Log
     @PutMapping
     public Result update(@RequestBody Dept dept){
         log.info("修改部门：" + dept);
