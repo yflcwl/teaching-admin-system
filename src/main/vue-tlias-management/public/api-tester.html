@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<!-- 声明文档类型为HTML5 -->
+<html lang="zh-CN">
+<!-- 根元素，设置语言为中文简体 -->
+<head>
+    <!-- 文档头部开始 -->
+    <meta charset="UTF-8">
+    <!-- 设置字符编码为UTF-8，支持中文 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 响应式设计，确保在不同设备上正常显示 -->
+    <title>🐦 API测试工具 - 小鸟助手</title>
+    <!-- 页面标题，显示在浏览器标签页 -->
+
+    <!-- 引入小鸟样式 -->
+    <link rel="stylesheet" href="./pet/pet-styles.css">
+    <!-- 引入外部小鸟桌宠的CSS样式文件 -->
+
+    <style>
+        /* 内嵌CSS样式开始 */
+        /* 页面主样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        /* 通用选择器：重置所有元素的内外边距，设置盒模型为border-box */
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            /* 设置字体栈，优先使用系统字体 */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            /* 背景渐变：从蓝色到紫色 */
+            min-height: 100vh;
+            /* 最小高度为视口高度，确保占满全屏 */
+            padding: 20px;
+            /* 内边距 */
+        }
+
+        .container {
+            max-width: 1400px;
+            /* 最大宽度 */
+            margin: 0 auto;
+            /* 水平居中 */
+            display: grid;
+            /* 使用CSS Grid布局 */
+            grid-template-columns: 1fr 400px;
+            /* 两列：第一列自适应，第二列固定400px */
+            gap: 20px;
+            /* 网格间距 */
+            height: calc(100vh - 40px);
+            /* 高度计算：视口高度减去内边距 */
+        }
+
+        @media (max-width: 1024px) {
+            /* 响应式设计：当屏幕宽度小于等于1024px时 */
+            .container {
+                grid-template-columns: 1fr;
+                /* 改为单列布局 */
+                grid-template-rows: auto 1fr;
+                /* 两行：第一行自适应，第二行占满剩余空间 */
+            }
+        }
+
+        /* API测试面板样式 */
+        .api-panel {
+            background: white;
+            /* 背景白色 */
+            border-radius: 15px;
+            /* 圆角 */
+            padding: 30px;
+            /* 内边距 */
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            /* 阴影效果 */
+            display: flex;
+            /* 弹性布局 */
+            flex-direction: column;
+            /* 垂直方向排列子元素 */
+            overflow: hidden;
+            /* 超出部分隐藏 */
+        }
+
+        .api-header {
+            margin-bottom: 30px;
+            /* 底部外边距 */
+        }
+
+        .api-header h1 {
+            color: #2c3e50;
+            /* 标题颜色 */
+            font-size: 28px;
+            /* 字体大小 */
+            margin-bottom: 10px;
+            /* 底部外边距 */
+        }
+
+        .api-header .subtitle {
+            color: #7f8c8d;
+            /* 副标题颜色 */
+            font-size: 14px;
+            /* 字体大小 */
+        }
+
+        /* 小鸟面板样式 */
+        .pet-panel {
+            background: white;
+            /* 背景白色 */
+            border-radius: 15px;
+            /* 圆角 */
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            /* 阴影效果 */
+            overflow: hidden;
+            /* 超出部分隐藏 */
+            display: flex;
+            /* 弹性布局 */
+            flex-direction: column;
+            /* 垂直方向排列子元素 */
+        }
+
+        .pet-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            /* 背景渐变 */
+            color: white;
+            /* 文字颜色白色 */
+            padding: 20px;
+            /* 内边距 */
+            text-align: center;
+            /* 文字居中 */
+        }
+
+        .pet-header h2 {
+            font-size: 20px;
+            /* 字体大小 */
+            margin-bottom: 5px;
+            /* 底部外边距 */
+        }
+
+        .pet-container {
+            flex: 1;
+            /* 占满剩余空间 */
+            position: relative;
+            /* 相对定位，用于子元素定位 */
+            min-height: 400px;
+            /* 最小高度 */
+            border: 2px dashed #e0e0e0;
+            /* 虚线边框 */
+            margin: 15px;
+            /* 外边距 */
+            border-radius: 10px;
+            /* 圆角 */
+            overflow: hidden;
+            /* 超出部分隐藏 */
+        }
+
+        .pet-controls {
+            padding: 20px;
+            /* 内边距 */
+            background: #f8f9fa;
+            /* 背景色 */
+            border-top: 1px solid #e0e0e0;
+            /* 顶部边框 */
+        }
+
+        /* API测试表单样式 */
+        .api-form {
+            flex: 1;
+            /* 占满剩余空间 */
+            overflow-y: auto;
+            /* 垂直方向溢出时显示滚动条 */
+            padding-right: 10px;
+            /* 右侧内边距 */
+        }
+
+        .form-section {
+            margin-bottom: 25px;
+            /* 底部外边距 */
+            padding: 20px;
+            /* 内边距 */
+            background: #f8f9fa;
+            /* 背景色 */
+            border-radius: 10px;
+            /* 圆角 */
+            border-left: 4px solid #667eea;
+            /* 左侧边框，作为装饰线 */
+        }
+
+        .form-section h3 {
+            color: #2c3e50;
+            /* 标题颜色 */
+            margin-bottom: 15px;
+            /* 底部外边距 */
+            font-size: 16px;
+            /* 字体大小 */
+            display: flex;
+            /* 弹性布局 */
+            align-items: center;
+            /* 垂直居中 */
+            gap: 8px;
+            /* 子元素间距 */
+        }
+
+        .form-section h3 i {
+            color: #667eea;
+            /* 图标颜色 */
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            /* 底部外边距 */
+        }
+
+        .form-group label {
+            display: block;
+            /* 块级元素，独占一行 */
+            margin-bottom: 8px;
+            /* 底部外边距 */
+            color: #555;
+            /* 标签颜色 */
+            font-weight: 500;
+            /* 字体粗细 */
+            font-size: 13px;
+            /* 字体大小 */
+        }
+
+        .form-control {
+            width: 100%;
+            /* 宽度100% */
+            padding: 12px 15px;
+            /* 内边距 */
+            border: 2px solid #e1e5e9;
+            /* 边框 */
+            border-radius: 8px;
+            /* 圆角 */
+            font-size: 14px;
+            /* 字体大小 */
+            transition: all 0.3s;
+            /* 过渡动画 */
+            font-family: 'Courier New', monospace;
+            /* 等宽字体，适合显示代码 */
+        }
+
+        .form-control:focus {
+            outline: none;
+            /* 移除默认轮廓线 */
+            border-color: #667eea;
+            /* 聚焦时边框颜色 */
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            /* 聚焦时阴影效果 */
+        }
+
+        .btn {
+            display: inline-flex;
+            /* 内联弹性布局 */
+            align-items: center;
+            /* 垂直居中 */
+            justify-content: center;
+            /* 水平居中 */
+            gap: 8px;
+            /* 子元素间距 */
+            padding: 12px 24px;
+            /* 内边距 */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            /* 背景渐变 */
+            color: white;
+            /* 文字颜色 */
+            border: none;
+            /* 无边框 */
+            border-radius: 8px;
+            /* 圆角 */
+            font-size: 14px;
+            /* 字体大小 */
+            font-weight: 600;
+            /* 字体粗细 */
+            cursor: pointer;
+            /* 鼠标悬停时显示手型 */
+            transition: all 0.3s;
+            /* 过渡动画 */
+            width: 100%;
+            /* 宽度100% */
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            /* 悬停时上移2px */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            /* 悬停时阴影效果 */
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            /* 点击时恢复原位 */
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            /* 成功按钮背景渐变：绿色 */
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            /* 危险按钮背景渐变：红色到橙色 */
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            /* 次要按钮背景渐变：灰色 */
+        }
+
+        /* 快捷按钮组 */
+        .quick-buttons {
+            display: grid;
+            /* 网格布局 */
+            grid-template-columns: repeat(2, 1fr);
+            /* 两列等宽 */
+            gap: 10px;
+            /* 网格间距 */
+            margin-top: 10px;
+            /* 顶部外边距 */
+        }
+
+        .quick-btn {
+            padding: 10px;
+            /* 内边距 */
+            background: white;
+            /* 背景白色 */
+            border: 2px solid #e1e5e9;
+            /* 边框 */
+            border-radius: 6px;
+            /* 圆角 */
+            font-size: 12px;
+            /* 字体大小 */
+            cursor: pointer;
+            /* 鼠标悬停时显示手型 */
+            transition: all 0.2s;
+            /* 过渡动画 */
+            text-align: center;
+            /* 文字居中 */
+        }
+
+        .quick-btn:hover {
+            background: #667eea;
+            /* 悬停时背景色 */
+            color: white;
+            /* 悬停时文字颜色 */
+            border-color: #667eea;
+            /* 悬停时边框颜色 */
+        }
+
+        /* 状态指示器 */
+        .status-indicator {
+            padding: 10px 15px;
+            /* 内边距 */
+            border-radius: 8px;
+            /* 圆角 */
+            margin: 15px 0;
+            /* 上下外边距 */
+            font-size: 13px;
+            /* 字体大小 */
+            font-weight: 500;
+            /* 字体粗细 */
+            display: none;
+            /* 默认隐藏 */
+        }
+
+        .status-success {
+            background: #d4edda;
+            /* 成功状态背景色 */
+            color: #155724;
+            /* 成功状态文字颜色 */
+            border: 1px solid #c3e6cb;
+            /* 成功状态边框 */
+        }
+
+        .status-error {
+            background: #f8d7da;
+            /* 错误状态背景色 */
+            color: #721c24;
+            /* 错误状态文字颜色 */
+            border: 1px solid #f5c6cb;
+            /* 错误状态边框 */
+        }
+
+        .status-loading {
+            background: #d1ecf1;
+            /* 加载状态背景色 */
+            color: #0c5460;
+            /* 加载状态文字颜色 */
+            border: 1px solid #bee5eb;
+            /* 加载状态边框 */
+        }
+
+        /* 结果展示区 */
+        .result-section {
+            margin-top: 20px;
+            /* 顶部外边距 */
+        }
+
+        .result-tabs {
+            display: flex;
+            /* 弹性布局 */
+            border-bottom: 2px solid #e1e5e9;
+            /* 底部边框 */
+            margin-bottom: 15px;
+            /* 底部外边距 */
+        }
+
+        .tab {
+            padding: 10px 20px;
+            /* 内边距 */
+            cursor: pointer;
+            /* 鼠标悬停时显示手型 */
+            font-size: 13px;
+            /* 字体大小 */
+            font-weight: 500;
+            /* 字体粗细 */
+            color: #7f8c8d;
+            /* 标签颜色 */
+            border-bottom: 3px solid transparent;
+            /* 底部边框，透明 */
+            transition: all 0.3s;
+            /* 过渡动画 */
+        }
+
+        .tab:hover {
+            color: #667eea;
+            /* 悬停时文字颜色 */
+        }
+
+        .tab.active {
+            color: #667eea;
+            /* 激活标签文字颜色 */
+            border-bottom-color: #667eea;
+            /* 激活标签底部边框颜色 */
+        }
+
+        .tab-content {
+            display: none;
+            /* 默认隐藏 */
+            background: #f8f9fa;
+            /* 背景色 */
+            padding: 20px;
+            /* 内边距 */
+            border-radius: 8px;
+            /* 圆角 */
+            max-height: 300px;
+            /* 最大高度 */
+            overflow-y: auto;
+            /* 垂直方向溢出时显示滚动条 */
+        }
+
+        .tab-content.active {
+            display: block;
+            /* 激活时显示为块级元素 */
+        }
+
+        .response-area {
+            font-family: 'Courier New', monospace;
+            /* 等宽字体 */
+            font-size: 12px;
+            /* 字体大小 */
+            line-height: 1.5;
+            /* 行高 */
+            white-space: pre-wrap;
+            /* 保留空白符，自动换行 */
+            word-break: break-all;
+            /* 允许在单词内换行 */
+        }
+
+        /* 小鸟控制按钮 */
+        .pet-btn-group {
+            display: grid;
+            /* 网格布局 */
+            grid-template-columns: repeat(3, 1fr);
+            /* 三列等宽 */
+            gap: 10px;
+            /* 网格间距 */
+            margin-top: 15px;
+            /* 顶部外边距 */
+        }
+
+        .pet-btn {
+            padding: 8px;
+            /* 内边距 */
+            background: white;
+            /* 背景白色 */
+            border: 2px solid #e1e5e9;
+            /* 边框 */
+            border-radius: 6px;
+            /* 圆角 */
+            font-size: 11px;
+            /* 字体大小 */
+            cursor: pointer;
+            /* 鼠标悬停时显示手型 */
+            transition: all 0.2s;
+            /* 过渡动画 */
+            text-align: center;
+            /* 文字居中 */
+        }
+
+        .pet-btn:hover {
+            background: #f0f0f0;
+            /* 悬停时背景色 */
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            /* 滚动条宽度 */
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            /* 滚动条轨道背景色 */
+            border-radius: 4px;
+            /* 圆角 */
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            /* 滚动条滑块颜色 */
+            border-radius: 4px;
+            /* 圆角 */
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+            /* 悬停时滚动条滑块颜色 */
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            /* 当屏幕宽度小于等于768px时 */
+            body {
+                padding: 10px;
+                /* 减少内边距 */
+            }
+
+            .container {
+                height: auto;
+                /* 高度自适应 */
+            }
+
+            .api-panel, .pet-panel {
+                padding: 20px;
+                /* 减少内边距 */
+            }
+
+            .pet-container {
+                min-height: 300px;
+                /* 减少最小高度 */
+            }
+
+            .quick-buttons {
+                grid-template-columns: 1fr;
+                /* 改为单列布局 */
+            }
+        }
+    </style>
+    <!-- 内嵌CSS样式结束 -->
+</head>
+<!-- 文档头部结束 -->
+<body>
+<!-- 文档主体开始 -->
+<div class="container">
+    <!-- 左侧：API测试面板 -->
+    <div class="api-panel">
+        <div class="api-header">
+            <h1>🔧 API测试工具</h1>
+            <!-- 主标题 -->
+            <p class="subtitle">可爱的小鸟助手陪你一起测试接口</p>
+            <!-- 副标题 -->
+        </div>
+
+        <div class="api-form">
+            <!-- 1. 登录区 -->
+            <div class="form-section">
+                <h3><i>🔐</i> 登录认证</h3>
+                <!-- 表单区域标题 -->
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <!-- 用户名输入框标签 -->
+                    <input type="text" id="username" class="form-control" value="jinyong" placeholder="输入用户名">
+                    <!-- 用户名输入框，预设值"jinyong" -->
+                </div>
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <!-- 密码输入框标签 -->
+                    <input type="password" id="password" class="form-control" value="123456" placeholder="输入密码">
+                    <!-- 密码输入框，预设值"123456" -->
+                </div>
+                <button class="btn" onclick="login()">
+                    <!-- 登录按钮，点击触发login()函数 -->
+                    <i>👉</i> 登录获取Token
+                </button>
+                <div id="tokenResult" class="status-indicator"></div>
+                <!-- Token结果显示区域，初始隐藏 -->
+            </div>
+
+            <!-- 2. API请求区 -->
+            <div class="form-section">
+                <h3><i>🌐</i> API请求配置</h3>
+                <!-- 表单区域标题 -->
+                <div class="form-group">
+                    <label for="apiMethod">请求方法</label>
+                    <!-- 请求方法下拉框标签 -->
+                    <select id="apiMethod" class="form-control">
+                        <!-- 请求方法下拉框 -->
+                        <option value="GET">GET</option>
+                        <!-- GET方法选项 -->
+                        <option value="POST">POST</option>
+                        <!-- POST方法选项 -->
+                        <option value="PUT">PUT</option>
+                        <!-- PUT方法选项 -->
+                        <option value="DELETE">DELETE</option>
+                        <!-- DELETE方法选项 -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="apiUrl">接口地址</label>
+                    <!-- 接口地址输入框标签 -->
+                    <input type="text" id="apiUrl" class="form-control" value="/api/depts" placeholder="/api/endpoint">
+                    <!-- 接口地址输入框，预设值"/depts" -->
+                </div>
+                <div class="form-group">
+                    <label for="requestBody">请求参数 (JSON格式)</label>
+                    <!-- 请求参数文本域标签 -->
+                    <textarea id="requestBody" class="form-control" rows="5" placeholder='{"key": "value"}'>{/* 预设的JSON参数，实际代码中这里有完整JSON，此处用注释代替 */}</textarea>
+                    <!-- 请求参数文本域，预设值 -->
+                </div>
+                <button class="btn btn-success" onclick="sendApiRequest()">
+                    <!-- 发送请求按钮，点击触发sendApiRequest()函数 -->
+                    <i>🚀</i> 发送请求
+                </button>
+            </div>
+
+            <!-- 3. 快捷测试区 -->
+            <div class="form-section">
+                <h3><i>⚡</i> 快捷测试</h3>
+                <!-- 表单区域标题 -->
+                <div class="quick-buttons">
+                    <!-- 快捷按钮容器，网格布局 -->
+                    <button class="quick-btn" onclick="quickApiTest('GET', '/api/depts')">部门列表</button>
+                    <!-- 快捷测试按钮：部门列表 -->
+                    <button class="quick-btn" onclick="quickApiTest('GET', '/api/emps?page=1&pageSize=5')">员工列表</button>
+                    <!-- 快捷测试按钮：员工列表 -->
+                    <button class="quick-btn" onclick="quickApiTest('GET', '/api/log/page?page=1&pageSize=5')">操作日志</button>
+                    <!-- 快捷测试按钮：操作日志 -->
+                    <button class="quick-btn" onclick="quickApiTest('GET', '/api/clazzs')">班级列表</button>
+                    <!-- 快捷测试按钮：班级列表 -->
+                    <button class="quick-btn" onclick="quickApiTest('GET', '/api/students?page=1&pageSize=5')">学员列表</button>
+                    <!-- 快捷测试按钮：学员列表 -->
+                    <button class="quick-btn" onclick="quickApiTest('GET', '/api/actuator/health')">健康检查</button>
+                    <!-- 快捷测试按钮：健康检查 -->
+                    <button class="quick-btn" onclick="quickApiTest('POST', '/api/login', '{&quot;username&quot;:&quot;jinyong&quot;,&quot;password&quot;:&quot;123456&quot;}')">登录测试</button>
+                    <!-- 快捷测试按钮：登录测试，注意HTML实体转义 -->
+                    <button class="quick-btn" onclick="testAllApis()">批量测试</button>
+                    <!-- 快捷测试按钮：批量测试 -->
+                </div>
+            </div>
+
+            <!-- 4. 结果显示区 -->
+            <div class="form-section result-section">
+                <h3><i>📊</i> 响应结果</h3>
+                <!-- 表单区域标题 -->
+                <div class="result-tabs">
+                    <!-- 标签页导航 -->
+                    <div class="tab active" onclick="switchTab('response')">响应体</div>
+                    <!-- 响应体标签，默认激活，点击切换到响应体 -->
+                    <div class="tab" onclick="switchTab('headers')">响应头</div>
+                    <!-- 响应头标签，点击切换到响应头 -->
+                    <div class="tab" onclick="switchTab('info')">请求信息</div>
+                    <!-- 请求信息标签，点击切换到请求信息 -->
+                </div>
+
+                <div id="responseTab" class="tab-content active">
+                    <!-- 响应体标签内容，默认激活 -->
+                    <div class="response-area" id="responseContent">
+                        {/* 响应内容将显示在这里 */}
+                    </div>
+                </div>
+
+                <div id="headersTab" class="tab-content">
+                    <!-- 响应头标签内容，默认隐藏 -->
+                    <div class="response-area" id="headersContent">
+                        {/* 响应头将显示在这里 */}
+                    </div>
+                </div>
+
+                <div id="infoTab" class="tab-content">
+                    <!-- 请求信息标签内容，默认隐藏 -->
+                    <div class="response-area" id="infoContent">
+                        {/* 请求信息将显示在这里 */}
+                    </div>
+                </div>
+
+                <div id="statusIndicator" class="status-indicator"></div>
+                <!-- 状态指示器，用于显示操作状态 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 右侧：小鸟桌宠面板 -->
+    <div class="pet-panel">
+        <div class="pet-header">
+            <h2>🐦 小鸟助手</h2>
+            <!-- 小鸟面板标题 -->
+            <p>点击互动，拖拽移动</p>
+            <!-- 小鸟面板副标题 -->
+        </div>
+
+        <!-- 小鸟容器 -->
+        <div class="pet-container" id="petContainer">
+            {/* 小鸟将在这里显示 */}
+        </div>
+
+        <div class="pet-controls">
+            <h3 style="margin-bottom: 15px; color: #555; font-size: 14px;">小鸟控制</h3>
+            <!-- 小鸟控制区域标题 -->
+            <div class="pet-btn-group">
+                <!-- 小鸟控制按钮组 -->
+                <button class="pet-btn" onclick="feedBird()">🍪 喂食</button>
+                <!-- 喂食按钮，点击触发feedBird()函数 -->
+                <button class="pet-btn" onclick="danceBird()">💃 跳舞</button>
+                <!-- 跳舞按钮，点击触发danceBird()函数 -->
+                <button class="pet-btn" onclick="sleepBird()">😴 睡觉</button>
+                <!-- 睡觉按钮，点击触发sleepBird()函数 -->
+                <button class="pet-btn" onclick="wakeBird()">⏰ 叫醒</button>
+                <!-- 叫醒按钮，点击触发wakeBird()函数 -->
+                <button class="pet-btn" onclick="changeBirdMood('happy')">😊 开心</button>
+                <!-- 开心按钮，点击触发changeBirdMood('happy')函数 -->
+                <button class="pet-btn" onclick="changeBirdMood('sad')">😢 难过</button>
+                <!-- 难过按钮，点击触发changeBirdMood('sad')函数 -->
+            </div>
+
+            <div style="margin-top: 15px;">
+                <!-- 小鸟状态监控区域 -->
+                <h4 style="font-size: 12px; color: #777; margin-bottom: 8px;">状态监控</h4>
+                <!-- 状态监控标题 -->
+                <div id="birdStatus" style="font-size: 11px; color: #555;">
+                    <!-- 小鸟状态显示容器 -->
+                    健康: <span id="healthBar">100%</span><br>
+                    <!-- 健康状态显示 -->
+                    快乐: <span id="happyBar">100%</span><br>
+                    <!-- 快乐状态显示 -->
+                    能量: <span id="energyBar">100%</span>
+                    <!-- 能量状态显示 -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 引入小鸟组件脚本 -->
+<script src="./pet/pet-core.js"></script>
+<!-- 引入小鸟核心脚本 -->
+<script src="./pet/pet-behaviors.js"></script>
+<!-- 引入小鸟行为脚本 -->
+<script src="./pet/pet-interactions.js"></script>
+<!-- 引入小鸟交互脚本 -->
+<script src="./pet/pet-messages.js"></script>
+<!-- 引入小鸟消息脚本 -->
+<script src="./pet/pet-animations.js"></script>
+<!-- 引入小鸟动画脚本 -->
+
+<script>
+    // ========== 全局变量 ==========
+    let currentToken = '';
+    // 当前认证Token
+    let petInstance = null;
+    // 小鸟桌宠实例
+    let apiHistory = [];
+    // API调用历史记录
+
+    // ========== 页面初始化 ==========
+    window.onload = function() {
+        // 页面加载完成后执行
+        // 初始化小鸟
+        initializeBirdPet();
+
+        // 恢复保存的Token
+        const savedToken = localStorage.getItem('apiToken');
+        // 从本地存储获取保存的Token
+        if (savedToken) {
+            currentToken = savedToken;
+            // 如果存在保存的Token，赋值给currentToken
+            showStatus('检测到已保存的Token', 'success');
+            // 显示状态信息
+            if (petInstance) {
+                petInstance.speak('检测到已有Token，可以直接测试API', 3000);
+                // 小鸟说话
+            }
+        }
+
+        // 加载API历史
+        loadApiHistory();
+    };
+
+    // ========== 小鸟初始化 ==========
+    function initializeBirdPet() {
+        try {
+            petInstance = new DesktopPet();
+            // 创建小鸟桌宠实例
+            petInstance.init({
+                // 初始化配置
+                containerId: 'petContainer',
+                // 容器ID
+                name: 'API助手',
+                // 名称
+                size: 70,
+                // 大小
+                autoWander: true,
+                // 是否自动漫游
+                mood: 'curious',
+                // 初始心情
+                colors: {
+                    // 颜色配置
+                    body: '#FFCC00',
+                    // 身体颜色
+                    beak: '#FF9900',
+                    // 鸟嘴颜色
+                    eye: '#000000',
+                    // 眼睛颜色
+                    wing: '#FFAA00'
+                    // 翅膀颜色
+                }
+            });
+
+            // 启动状态监控
+            startBirdStatusMonitor();
+            // 开始监控小鸟状态
+
+            console.log('🐦 小鸟助手初始化成功');
+            // 控制台输出日志
+        } catch (error) {
+            // 捕获错误
+            console.error('小鸟初始化失败:', error);
+            // 控制台输出错误
+            document.getElementById('petContainer').innerHTML = `
+                <div style="text-align: center; padding: 50px; color: #666;">
+                    <!-- 显示错误信息 -->
+                    <p>小鸟助手加载失败</p>
+                    <p style="font-size: 12px;">${error.message}</p>
+                </div>
+            `;
+        }
+    }
+
+    // ========== API请求函数 ==========
+    async function login() {
+        // 异步登录函数
+        const username = document.getElementById('username').value.trim();
+        // 获取用户名
+        const password = document.getElementById('password').value.trim();
+        // 获取密码
+
+        if (!username || !password) {
+            // 验证输入
+            showStatus('请输入用户名和密码', 'error');
+            // 显示错误状态
+            return;
+        }
+
+        showStatus('正在登录...', 'loading');
+        // 显示加载状态
+
+        // 小鸟反应
+        if (petInstance) {
+            // 如果小鸟实例存在
+            petInstance.showLoading(true);
+            // 显示加载动画
+            petInstance.speak('正在登录系统...');
+            // 小鸟说话
+        }
+
+        try {
+            const startTime = Date.now();
+            // 记录开始时间
+            const response = await fetch('/api/login', {
+                // 发送登录请求
+                method: 'POST',
+                // POST方法
+                headers: {
+                    'Content-Type': 'application/json'
+                    // 请求头
+                },
+                body: JSON.stringify({ username, password })
+                // 请求体
+            });
+
+            const duration = Date.now() - startTime;
+            // 计算请求耗时
+            const data = await response.json();
+            // 解析响应为JSON
+
+            // 小鸟停止加载
+            if (petInstance) {
+                petInstance.showLoading(false);
+                // 隐藏加载动画
+            }
+
+            if (data.code === 1) {
+                // 判断响应码是否为成功（假设1表示成功）
+                // 登录成功
+                currentToken = data.data.token;
+                // 保存Token
+                localStorage.setItem('apiToken', currentToken);
+                // 存储Token到本地存储
+
+                showStatus(`✅ 登录成功！耗时 ${duration}ms`, 'success');
+                // 显示成功状态
+                document.getElementById('tokenResult').innerHTML = `
+                    <div style="color: #155724; font-weight: bold;">
+                        ✅ 登录成功！欢迎 ${data.data.name}
+                        <!-- 显示登录成功信息 -->
+                    </div>
+                    <div style="font-size: 11px; color: #666; margin-top: 5px; word-break: break-all;">
+                        Token: ${currentToken.substring(0, 50)}...
+                        <!-- 显示Token的前50个字符 -->
+                    </div>
+                `;
+
+                // 小鸟庆祝
+                if (petInstance) {
+                    petInstance.celebrate();
+                    // 小鸟庆祝动作
+                    petInstance.speak(`登录成功！欢迎${data.data.name}`, 3000);
+                    // 小鸟说话
+                    petInstance.changeMood('happy');
+                    // 改变小鸟心情
+                }
+
+                // 记录API调用
+                recordApiCall('POST', '/login', response.status, duration, data);
+                // 记录这次API调用
+
+            } else {
+                // 登录失败
+                showStatus(`❌ 登录失败: ${data.msg}`, 'error');
+                // 显示失败状态
+
+                // 小鸟反应
+                if (petInstance) {
+                    petInstance.playAnimation('error');
+                    // 播放错误动画
+                    petInstance.speak('登录失败，检查账号密码', 2000);
+                    // 小鸟说话
+                    petInstance.changeMood('sad');
+                    // 改变小鸟心情
+                }
+            }
+
+        } catch (error) {
+            // 捕获网络错误
+            showStatus(`❌ 网络错误: ${error.message}`, 'error');
+            // 显示错误状态
+
+            if (petInstance) {
+                petInstance.showLoading(false);
+                // 隐藏加载动画
+                petInstance.playAnimation('error');
+                // 播放错误动画
+                petInstance.speak('网络连接失败', 2000);
+                // 小鸟说话
+            }
+        }
+    }
+
+    async function sendApiRequest() {
+        // 发送API请求
+        const method = document.getElementById('apiMethod').value;
+        // 获取请求方法
+        let url = document.getElementById('apiUrl').value.trim();
+        // 获取URL
+        const requestBody = document.getElementById('requestBody').value.trim();
+        // 获取请求体
+
+        if (!url) {
+            // 验证URL
+            showStatus('请输入接口地址', 'error');
+            return;
+        }
+
+        // 确保URL以/开头
+        if (!url.startsWith('/')) {
+            url = '/' + url;
+            // 自动添加斜杠
+            document.getElementById('apiUrl').value = url;
+            // 更新输入框的值
+        }
+        
+        // 确保API路径包含/api前缀（除了登录接口）
+        if (!url.startsWith('/api') && !url.startsWith('/login')) {
+            url = '/api' + url;
+            document.getElementById('apiUrl').value = url;
+        }
+
+        // 小鸟反应
+        if (petInstance) {
+            petInstance.showLoading(true);
+            // 显示加载动画
+            petInstance.speak(`正在调用 ${method} ${url}...`);
+            // 小鸟说话
+        }
+
+        showStatus('正在发送请求...', 'loading');
+        // 显示加载状态
+
+        const headers = {
+            'Content-Type': 'application/json'
+            // 设置请求头
+        };
+
+        // 添加Token（如果存在且不是登录接口）
+        if (currentToken && url !== '/login') {
+            headers['token'] = currentToken;
+            // 添加认证Token
+        }
+
+        const startTime = Date.now();
+        // 记录开始时间
+
+        try {
+            const options = {
+                method: method,
+                // 请求方法
+                headers: headers
+                // 请求头
+            };
+
+            // 添加请求体
+            if (method !== 'GET' && requestBody) {
+                // 非GET请求且有请求体时
+                try {
+                    JSON.parse(requestBody);
+                    // 验证JSON格式
+                    options.body = requestBody;
+                    // 设置请求体
+                } catch (e) {
+                    showStatus('请求参数必须是有效的JSON格式', 'error');
+                    // 显示错误
+                    if (petInstance) {
+                        petInstance.showLoading(false);
+                        // 隐藏加载动画
+                        petInstance.speak('JSON格式错误', 2000);
+                        // 小鸟说话
+                    }
+                    return;
+                }
+            }
+
+            const response = await fetch(url, options);
+            // 发送请求
+            const duration = Date.now() - startTime;
+            // 计算请求耗时
+
+            // 获取响应头和响应体
+            const responseHeaders = {};
+            // 存储响应头
+            response.headers.forEach((value, key) => {
+                // 遍历响应头
+                responseHeaders[key] = value;
+            });
+
+            const responseText = await response.text();
+            // 获取响应文本
+            let responseData;
+            // 响应数据
+
+            try {
+                responseData = JSON.parse(responseText);
+                // 尝试解析为JSON
+            } catch {
+                responseData = responseText;
+                // 解析失败，使用原始文本
+            }
+
+            // 小鸟反应
+            if (petInstance) {
+                petInstance.showLoading(false);
+                // 隐藏加载动画
+
+                if (response.ok) {
+                    // 请求成功
+                    petInstance.speak(`请求成功！耗时 ${duration}ms`, 2000);
+                    // 小鸟说话
+
+                    // 根据数据量做不同反应
+                    if (responseData && responseData.data) {
+                        // 如果有数据
+                        const dataCount = Array.isArray(responseData.data) ?
+                            responseData.data.length :
+                            (typeof responseData.data === 'object' ? 1 : 0);
+                        // 计算数据条数
+
+                        if (dataCount > 10) {
+                            petInstance.dance();
+                            // 数据多时跳舞
+                            petInstance.speak(`获取了${dataCount}条数据，好多呀！`, 3000);
+                        } else if (dataCount > 0) {
+                            petInstance.celebrate();
+                            // 有数据时庆祝
+                        }
+                    }
+                } else {
+                    petInstance.playAnimation('error');
+                    // 播放错误动画
+                    petInstance.speak(`请求失败: ${response.status}`, 2000);
+                    // 小鸟说话
+                    petInstance.changeMood('sad');
+                    // 改变心情
+                }
+            }
+
+            // 显示结果
+            displayApiResponse(response, responseData, responseHeaders, duration, options);
+            // 显示API响应
+
+            // 记录API调用
+            recordApiCall(method, url, response.status, duration, responseData);
+            // 记录这次API调用
+
+        } catch (error) {
+            const duration = Date.now() - startTime;
+            // 计算请求耗时
+            showStatus(`❌ 请求失败: ${error.message}`, 'error');
+            // 显示错误状态
+
+            if (petInstance) {
+                petInstance.showLoading(false);
+                // 隐藏加载动画
+                petInstance.playAnimation('error');
+                // 播放错误动画
+                petInstance.speak('网络请求失败', 2000);
+                // 小鸟说话
+                petInstance.changeMood('sad');
+                // 改变心情
+            }
+
+            // 显示错误信息
+            displayErrorResponse(error, duration);
+            // 显示错误响应
+        }
+    }
+
+    // ========== 快捷测试函数 ==========
+    function quickApiTest(method, url, body = null) {
+        // 快捷API测试函数
+        document.getElementById('apiMethod').value = method;
+        // 设置请求方法
+        document.getElementById('apiUrl').value = url;
+        // 设置URL
+
+        if (body) {
+            // 如果有请求体
+            document.getElementById('requestBody').value = body;
+            // 设置请求体
+        } else if (method === 'POST' || method === 'PUT') {
+            // POST或PUT方法时
+            document.getElementById('requestBody').value = '{}';
+            // 设置空JSON
+        } else {
+            document.getElementById('requestBody').value = '';
+            // 清空请求体
+        }
+
+        // 小鸟提示
+        if (petInstance) {
+            petInstance.speak(`准备测试 ${method} ${url}`, 1500);
+            // 小鸟说话
+        }
+
+        // 自动发送请求
+        setTimeout(() => sendApiRequest(), 500);
+        // 延迟500ms后发送请求
+    }
+
+    async function testAllApis() {
+        // 批量测试所有API
+            if (petInstance) {
+                petInstance.speak('开始批量测试所有接口...', 2000);
+                // 小鸟说话
+            }
+            
+            // 检查是否已登录
+            if (!currentToken) {
+                showStatus('请先登录再进行批量测试', 'error');
+                if (petInstance) {
+                    petInstance.speak('请先登录获取Token', 2000);
+                }
+                return;
+            }
+
+        const apis = [
+            // 定义要测试的API列表
+            { method: 'GET', url: '/api/depts', name: '部门列表' },
+            { method: 'GET', url: '/api/emps?page=1&pageSize=3', name: '员工列表' },
+            { method: 'GET', url: '/api/log/page?page=1&pageSize=3', name: '操作日志' },
+            { method: 'GET', url: '/api/actuator/health', name: '健康检查' }
+        ];
+
+        let successCount = 0;
+        // 成功计数
+        let failCount = 0;
+        // 失败计数
+
+        for (let i = 0; i < apis.length; i++) {
+            // 遍历所有API
+            const api = apis[i];
+
+            if (petInstance) {
+                petInstance.speak(`正在测试 ${api.name}...`, 1500);
+                // 小鸟说话
+            }
+
+            try {
+                const response = await fetch(api.url, {
+                    // 发送请求
+                    method: api.method,
+                    // 请求方法
+                    headers: currentToken ? { 'token': currentToken } : {}
+                    // 请求头，如果有Token则添加
+                });
+
+                if (response.ok) {
+                    // 请求成功
+                    successCount++;
+                    // 成功计数加1
+                    if (petInstance) {
+                        petInstance.speak(`${api.name} 测试成功`, 1000);
+                        // 小鸟说话
+                    }
+                } else {
+                    // 请求失败
+                    failCount++;
+                    // 失败计数加1
+                    if (petInstance) {
+                        petInstance.speak(`${api.name} 测试失败`, 1000);
+                        // 小鸟说话
+                    }
+                }
+
+                // 短暂延迟
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                // 延迟1秒
+
+            } catch (error) {
+                failCount++;
+                // 捕获错误，失败计数加1
+            }
+        }
+
+        // 显示结果
+        const result = `批量测试完成！成功: ${successCount}, 失败: ${failCount}`;
+        // 构造结果字符串
+        showStatus(result, successCount === apis.length ? 'success' : 'error');
+        // 显示状态
+
+        if (petInstance) {
+            if (successCount === apis.length) {
+                // 如果全部成功
+                petInstance.celebrate();
+                // 小鸟庆祝
+                petInstance.speak('所有接口测试成功！🎉', 3000);
+                // 小鸟说话
+            } else {
+                petInstance.speak(`测试完成，${failCount}个接口失败`, 2000);
+                // 小鸟说话
+            }
+        }
+    }
+
+    // ========== 小鸟控制函数 ==========
+    function feedBird() {
+        // 喂食小鸟
+        if (petInstance && petInstance.feed) {
+            petInstance.feed();
+            // 调用喂食方法
+        }
+    }
+
+    function danceBird() {
+        // 让小鸟跳舞
+        if (petInstance && petInstance.dance) {
+            petInstance.dance();
+        }
+    }
+
+    function sleepBird() {
+        // 让小鸟睡觉
+        if (petInstance && petInstance.sleep) {
+            petInstance.sleep();
+        }
+    }
+
+    function wakeBird() {
+        // 叫醒小鸟
+        if (petInstance && petInstance.wakeUp) {
+            petInstance.wakeUp();
+        }
+    }
+
+    function changeBirdMood(mood) {
+        // 改变小鸟心情
+        if (petInstance && petInstance.changeMood) {
+            petInstance.changeMood(mood);
+        }
+    }
+
+    // ========== 工具函数 ==========
+    function showStatus(message, type) {
+        // 显示状态消息
+        const indicator = document.getElementById('statusIndicator');
+        // 获取状态指示器元素
+        indicator.textContent = message;
+        // 设置消息内容
+        indicator.className = `status-indicator status-${type}`;
+        // 设置CSS类名
+        indicator.style.display = 'block';
+        // 显示元素
+
+        // 自动隐藏
+        if (type !== 'loading') {
+            // 如果不是加载状态
+            setTimeout(() => {
+                indicator.style.display = 'none';
+                // 5秒后隐藏
+            }, 5000);
+        }
+    }
+
+    function switchTab(tabName) {
+        // 切换标签页
+        // 更新标签
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.classList.remove('active');
+            // 移除所有标签的active类
+        });
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+            // 移除所有内容的active类
+        });
+
+        // 激活选中标签
+        document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+        // 给点击的标签添加active类
+        document.getElementById(tabName + 'Tab').classList.add('active');
+        // 显示对应的内容
+    }
+
+    function displayApiResponse(response, data, headers, duration, options) {
+        // 显示API响应
+        // 显示响应体
+        const responseContent = document.getElementById('responseContent');
+        // 获取响应内容元素
+        responseContent.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+        // 格式化显示JSON
+
+        // 显示响应头
+        const headersContent = document.getElementById('headersContent');
+        // 获取响应头元素
+        headersContent.innerHTML = `<pre>${JSON.stringify(headers, null, 2)}</pre>`;
+        // 格式化显示响应头
+
+        // 显示请求信息
+        const infoContent = document.getElementById('infoContent');
+        // 获取请求信息元素
+        infoContent.innerHTML = `
+请求方法: ${options.method}
+请求URL: ${document.getElementById('apiUrl').value}
+请求耗时: ${duration}ms
+响应状态: ${response.status} ${response.statusText}
+响应大小: ${JSON.stringify(data).length} 字节
+请求时间: ${new Date().toLocaleString()}
+        `;
+        // 显示请求信息
+
+        // 显示状态
+        if (response.ok) {
+            showStatus(`✅ 请求成功！耗时 ${duration}ms`, 'success');
+            // 显示成功状态
+        } else {
+            showStatus(`❌ 请求失败: ${response.status} ${response.statusText}`, 'error');
+            // 显示失败状态
+        }
+
+        // 切换到响应标签
+        switchTab('response');
+    }
+
+    function displayErrorResponse(error, duration) {
+        // 显示错误响应
+        const responseContent = document.getElementById('responseContent');
+        // 获取响应内容元素
+        responseContent.innerHTML = `<pre>${error.stack || error.message}</pre>`;
+        // 显示错误堆栈或消息
+
+        const infoContent = document.getElementById('infoContent');
+        // 获取请求信息元素
+        infoContent.innerHTML = `
+错误类型: ${error.name}
+错误信息: ${error.message}
+请求耗时: ${duration}ms
+错误时间: ${new Date().toLocaleString()}
+        `;
+        // 显示错误信息
+
+        switchTab('response');
+        // 切换到响应标签
+    }
+
+    function recordApiCall(method, url, status, duration, responseData) {
+        // 记录API调用
+        const apiCall = {
+            // 构造API调用记录对象
+            method,
+            url,
+            status,
+            duration,
+            timestamp: new Date().toISOString(),
+            // 时间戳
+            success: status >= 200 && status < 300
+            // 是否成功
+        };
+
+        apiHistory.unshift(apiCall);
+        // 添加到历史记录开头
+        if (apiHistory.length > 20) {
+            apiHistory = apiHistory.slice(0, 20);
+            // 只保留最近20条记录
+        }
+
+        // 保存到localStorage
+        localStorage.setItem('apiHistory', JSON.stringify(apiHistory));
+        // 保存到本地存储
+    }
+
+    function loadApiHistory() {
+        // 加载API历史
+        const savedHistory = localStorage.getItem('apiHistory');
+        // 从本地存储获取历史记录
+        if (savedHistory) {
+            apiHistory = JSON.parse(savedHistory);
+            // 解析为JSON数组
+        }
+    }
+
+    function startBirdStatusMonitor() {
+        // 启动小鸟状态监控
+        setInterval(() => {
+            // 每2秒执行一次
+            if (petInstance && petInstance.getState) {
+                // 如果小鸟实例存在且有getState方法
+                const state = petInstance.getState();
+                // 获取小鸟状态
+                document.getElementById('healthBar').textContent = state.health + '%';
+                // 更新健康状态显示
+                document.getElementById('happyBar').textContent = state.happiness + '%';
+                // 更新快乐状态显示
+                document.getElementById('energyBar').textContent = state.energy + '%';
+                // 更新能量状态显示
+            }
+        }, 2000);
+    }
+</script>
+<!-- JavaScript代码结束 -->
+</body>
+<!-- 文档主体结束 -->
+</html>
+<!-- HTML文档结束 -->
