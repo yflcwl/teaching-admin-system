@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.anno.Permission;
 import org.example.mapper.OperateLogMapper;
 import org.example.pojo.OperateLog;
 import org.example.pojo.PageResult;
@@ -23,6 +24,7 @@ public class LogController {
     private EmpLogService empLogService;
 
     @GetMapping("/page")
+    @Permission("log.view")
     public Result page(@RequestParam Integer page, @RequestParam Integer pageSize) {
         log.info("日志分页查询");
         PageResult<OperateLog> pageResult = empLogService.page(page, pageSize);

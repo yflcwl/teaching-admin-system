@@ -2,6 +2,7 @@ package org.example.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.anno.Log;
+import org.example.anno.Permission;
 import org.example.mapper.EmpExprMapper;
 import org.example.pojo.*;
 import org.example.service.EmpService;
@@ -81,6 +82,7 @@ public class EmpController {
     }
 
     @GetMapping
+    @Permission("emp.list")
     public Result page(EmpQueryParam empQueryParam){
         log.info("员工分页查询：{}", empQueryParam);
         PageResult<Emp> pageResult = empService.page(empQueryParam);
@@ -92,6 +94,7 @@ public class EmpController {
     * */
     @Log
     @PostMapping
+    @Permission("emp.create")
     public Result save(@RequestBody Emp emp){
         //员工信息
         log.info("新增员工{}",emp);
@@ -110,6 +113,7 @@ public class EmpController {
     * */
     @Log
     @DeleteMapping
+    @Permission("emp.delete")
     public Result delete(@RequestParam List<Integer> ids){
         log.info("删除员工:{}", ids);
         empService.delete(ids);
@@ -120,6 +124,7 @@ public class EmpController {
     * 根据id查询员工信息
     * */
     @GetMapping("/{id}")
+    @Permission("emp.view")
     public Result getInfo(@PathVariable Integer id){
         log.info("根据id查询员工信息：{}", id);
         Emp emp = empService.getInfo(id);
@@ -131,6 +136,7 @@ public class EmpController {
     * */
     @Log
     @PutMapping
+    @Permission("emp.edit")
     public Result update(@RequestBody Emp emp){
         log.info("修改员工信息：{}", emp);
         empService.update(emp);
@@ -141,6 +147,7 @@ public class EmpController {
      * 获取老师名称
      * */
     @GetMapping("/list")
+    @Permission("emp.list")
     public Result getEmps(){
         List<Emp> emps = empService.getEmps();
 
