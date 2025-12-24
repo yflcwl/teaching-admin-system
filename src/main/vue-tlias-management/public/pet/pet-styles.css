@@ -1,0 +1,225 @@
+/* 桌面小鸟助手 - 样式文件 */
+/* 定义小鸟桌宠的所有视觉样式和动画效果 */
+
+/* 小鸟容器 - 包裹整个小鸟元素 */
+.desktop-pet {
+    position: absolute;      /* 绝对定位，可以在容器内自由移动 */
+    cursor: pointer;        /* 鼠标指针样式为可点击 */
+    z-index: 1000;          /* 较高的层级，确保在其他元素上方 */
+    transition: all 0.3s ease; /* 所有CSS属性变化都有0.3秒的缓动过渡 */
+    user-select: none;      /* 禁止用户选择文本，提升交互体验 */
+}
+
+/* 小鸟身体样式 */
+.pet-body {
+    position: relative;     /* 相对定位，作为内部元素的定位参考 */
+    border-radius: 50%;     /* 圆形身体 */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* 阴影效果，增强立体感 */
+}
+
+/* 眼睛动画 */
+.pet-eye {
+    animation: eye-blink 3s infinite; /* 应用眨眼动画：3秒循环，无限次 */
+}
+
+/* 眨眼动画关键帧 */
+@keyframes eye-blink {
+    0%, 96%, 100% {     /* 96%的时间内眼睛正常 */
+        height: var(--eye-height); /* 使用CSS变量控制眼睛高度 */
+    }
+    98% {               /* 2%的时间内眨眼（眼睛变细） */
+        height: 2px;    /* 眼睛高度变为2px，模拟眨眼效果 */
+    }
+}
+
+/* 翅膀样式 - 设置变换原点 */
+.pet-wing-left,
+.pet-wing-right {
+    transform-origin: center; /* 变换（旋转/缩放）的中心点为元素中心 */
+}
+
+/* ========== 心情样式（通过CSS滤镜实现） ========== */
+
+/* 开心状态 - 增加亮度 */
+.pet-happy {
+    filter: brightness(1.1); /* 亮度增加到110% */
+}
+
+/* 生气状态 - 改变色调和饱和度 */
+.pet-angry {
+    /* hue-rotate(300deg): 将色相旋转300度（接近红色）
+       saturate(1.5): 饱和度增加到150% */
+    filter: hue-rotate(300deg) saturate(1.5);
+}
+
+/* 难过状态 - 降低亮度和饱和度 */
+.pet-sad {
+    /* brightness(0.9): 亮度降低到90%
+       saturate(0.7): 饱和度降低到70% */
+    filter: brightness(0.9) saturate(0.7);
+}
+
+/* ========== 对话气泡样式 ========== */
+
+.pet-speech-bubble {
+    position: absolute;                     /* 绝对定位 */
+    background: white;                      /* 白色背景 */
+    padding: 8px 12px;                      /* 内边距 */
+    border-radius: 12px;                    /* 圆角 */
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2); /* 阴影 */
+    font-size: 12px;                        /* 字体大小 */
+    z-index: 1001;                          /* 比小鸟更高的层级 */
+    min-width: 80px;                        /* 最小宽度 */
+    max-width: 200px;                       /* 最大宽度，防止太长 */
+    text-align: center;                     /* 文字居中 */
+    animation: bubble-pop 0.3s ease-out;    /* 弹出动画 */
+}
+
+/* 气泡的三角形箭头（使用伪元素实现） */
+.pet-speech-bubble:after {
+    content: '';                     /* 必须有content属性伪元素才能显示 */
+    position: absolute;              /* 绝对定位 */
+    top: 100%;                       /* 定位在气泡底部 */
+    left: 50%;                       /* 水平居中 */
+    transform: translateX(-50%);     /* 向左平移自身宽度的一半，实现真正居中 */
+    border: 8px solid transparent;   /* 透明边框 */
+    border-top-color: white;         /* 只有上边框有颜色，形成向下的三角形 */
+}
+
+/* 气泡弹出动画 */
+@keyframes bubble-pop {
+    0% {
+        transform: translate(-50%, 10px) scale(0.8);  /* 向下偏移10px，缩放80% */
+        opacity: 0;                                   /* 完全透明 */
+    }
+    100% {
+        transform: translate(-50%, 0) scale(1);       /* 回到原位，正常大小 */
+        opacity: 1;                                   /* 完全不透明 */
+    }
+}
+
+/* ========== 状态指示器（显示健康、快乐等数值） ========== */
+
+.pet-status-indicator {
+    position: absolute;                    /* 绝对定位 */
+    top: -30px;                           /* 在小鸟上方30px */
+    left: 50%;                            /* 水平居中 */
+    transform: translateX(-50%);          /* 向左平移50%自身宽度 */
+    background: rgba(0, 0, 0, 0.7);       /* 半透明黑色背景 */
+    color: white;                         /* 白色文字 */
+    padding: 4px 8px;                     /* 内边距 */
+    border-radius: 4px;                   /* 小圆角 */
+    font-size: 10px;                      /* 小字体 */
+    white-space: nowrap;                  /* 不换行 */
+    display: none;                        /* 默认隐藏 */
+}
+
+/* ========== 食物特效样式 ========== */
+
+.pet-food-effect {
+    position: absolute;                   /* 绝对定位 */
+    width: 20px;                          /* 宽度 */
+    height: 20px;                         /* 高度 */
+    background: #FF6B6B;                  /* 红色系背景 */
+    border-radius: 50%;                   /* 圆形 */
+    animation: food-float 1s ease-out forwards; /* 应用浮动动画 */
+    pointer-events: none;                 /* 不响应鼠标事件，防止干扰 */
+}
+
+/* 食物浮动动画关键帧 */
+@keyframes food-float {
+    0% {
+        transform: translateY(0) scale(1);  /* 起始位置：不偏移，正常大小 */
+        opacity: 1;                         /* 完全不透明 */
+    }
+    100% {
+        transform: translateY(-50px) scale(0.5);  /* 向上移动50px，缩小到50% */
+        opacity: 0;                               /* 完全透明 */
+    }
+}
+
+/* ========== 爱心特效样式 ========== */
+
+.pet-heart-effect {
+    position: absolute;                   /* 绝对定位 */
+    font-size: 20px;                      /* 字体大小（使用emoji字符） */
+    color: #FF6B6B;                       /* 红色 */
+    animation: heart-float 1.5s ease-out forwards; /* 应用爱心浮动动画 */
+    pointer-events: none;                 /* 不响应鼠标事件 */
+}
+
+/* 爱心浮动动画关键帧 */
+@keyframes heart-float {
+    0% {
+        transform: translateY(0) scale(1);  /* 起始位置：不偏移，正常大小 */
+        opacity: 1;                         /* 完全不透明 */
+    }
+    100% {
+        transform: translateY(-100px) scale(1.5); /* 向上移动100px，放大到150% */
+        opacity: 0;                               /* 完全透明 */
+    }
+}
+
+/* ========== 右键上下文菜单样式 ========== */
+
+.pet-context-menu {
+    position: fixed;                      /* 固定定位，相对于浏览器窗口 */
+    background: white;                    /* 白色背景 */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* 阴影 */
+    border-radius: 8px;                   /* 圆角 */
+    z-index: 9999;                        /* 最高层级，确保在最前面 */
+    overflow: hidden;                     /* 隐藏超出部分 */
+}
+
+/* 菜单按钮样式 */
+.pet-context-menu button {
+    display: block;                       /* 块级显示，每个按钮占一行 */
+    width: 100%;                          /* 宽度100%填满菜单 */
+    padding: 8px 15px;                    /* 内边距 */
+    border: none;                         /* 无边框 */
+    background: none;                     /* 透明背景 */
+    text-align: left;                     /* 文字左对齐 */
+    cursor: pointer;                      /* 指针样式 */
+    font-size: 14px;                      /* 字体大小 */
+    transition: background-color 0.2s;    /* 背景色过渡动画 */
+}
+
+/* 菜单按钮悬停效果 */
+.pet-context-menu button:hover {
+    background-color: #f5f5f5;            /* 浅灰色背景 */
+}
+
+/* ========== 响应式设计 ========== */
+
+/* 在小屏幕设备上的调整（最大宽度768px） */
+@media (max-width: 768px) {
+    .desktop-pet {
+        transform: scale(0.8);            /* 整体缩小到80% */
+    }
+
+    .pet-speech-bubble {
+        font-size: 11px;                  /* 字体缩小 */
+        max-width: 150px;                 /* 最大宽度减小 */
+    }
+}
+
+/* ========== 暗色主题支持 ========== */
+
+/* 检测用户是否偏好暗色主题 */
+@media (prefers-color-scheme: dark) {
+    /* 暗色主题下的小鸟身体 */
+    .pet-body {
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); /* 更深的阴影 */
+    }
+
+    /* 暗色主题下的对话气泡 */
+    .pet-speech-bubble {
+        background: #333;                 /* 深灰色背景 */
+        color: white;                     /* 白色文字 */
+    }
+
+    /* 暗色主题下的气泡箭头 */
+    .pet-speech-bubble:after {
+        border-top-color: #333;           /* 深灰色箭头 */
+    }
+}

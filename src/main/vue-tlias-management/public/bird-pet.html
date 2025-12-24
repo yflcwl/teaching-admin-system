@@ -1,0 +1,291 @@
+<!-- 声明文档类型为HTML5，告诉浏览器按照HTML5标准解析此文档 -->
+<!DOCTYPE html>
+<!-- HTML文档根元素，lang属性指定文档主要语言为简体中文 -->
+<html lang="zh-CN">
+<!-- 文档头部，包含元数据和外部资源链接 -->
+<head>
+    <!-- 设置文档字符编码为UTF-8，支持中文和特殊字符 -->
+    <meta charset="UTF-8">
+    <!-- 响应式设计的关键标签，设置视口宽度等于设备宽度，初始缩放比例为1 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 页面标题，显示在浏览器标签页上 -->
+    <title>🐦 小鸟助手</title>
+
+    <!-- 引入小鸟桌宠的外部CSS样式文件 -->
+    <link rel="stylesheet" href="./pet/pet-styles.css">
+
+    <!-- 内部样式表，定义页面的核心样式 -->
+    <style>
+        /* 通配选择器，重置所有元素的内外边距，设置盒模型为border-box */
+        * {
+            margin: 0;        /* 清除默认外边距 */
+            padding: 0;       /* 清除默认内边距 */
+            box-sizing: border-box; /* 盒模型：宽度和高度包含边框和内边距 */
+        }
+
+        /* 页面主体样式 */
+        body {
+            /* 字体栈：优先使用系统字体，确保跨平台一致性 */
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            /* 背景渐变：从蓝色(#667eea)到紫色(#764ba2)，135度角 */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;     /* 最小高度为视口高度，确保全屏显示 */
+            padding: 20px;         /* 内边距 */
+            /* 弹性布局：水平垂直居中 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 小鸟面板容器样式 */
+        .pet-panel {
+            background: white;      /* 白色背景 */
+            border-radius: 15px;    /* 圆角边框 */
+            /* 阴影效果：X偏移0，Y偏移20px，模糊40px，半透明黑色 */
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;       /* 溢出内容隐藏 */
+            display: flex;          /* 弹性布局 */
+            flex-direction: column; /* 垂直方向排列子元素 */
+            width: 400px;           /* 固定宽度 */
+        }
+
+        /* 面板头部样式 */
+        .pet-header {
+            /* 头部背景渐变：与页面背景相同 */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;           /* 文字白色 */
+            padding: 20px;          /* 内边距 */
+            text-align: center;     /* 文字居中 */
+        }
+
+        /* 面板标题样式 */
+        .pet-header h2 {
+            font-size: 20px;        /* 字体大小 */
+            margin-bottom: 5px;     /* 底部外边距 */
+        }
+
+        /* 小鸟显示容器样式 */
+        .pet-container {
+            flex: 1;                /* 弹性因子1，占据剩余空间 */
+            position: relative;     /* 相对定位，作为子元素的定位基准 */
+            min-height: 400px;      /* 最小高度 */
+            border: 2px dashed #e0e0e0; /* 虚线边框 */
+            margin: 15px;           /* 外边距 */
+            border-radius: 10px;    /* 圆角 */
+            overflow: hidden;       /* 溢出隐藏 */
+        }
+
+        /* 控制区域样式 */
+        .pet-controls {
+            padding: 20px;          /* 内边距 */
+            background: #f8f9fa;    /* 浅灰色背景 */
+            border-top: 1px solid #e0e0e0; /* 顶部边框线 */
+        }
+
+        /* 按钮组样式（网格布局） */
+        .pet-btn-group {
+            display: grid;                      /* 网格布局 */
+            grid-template-columns: repeat(3, 1fr); /* 三列等宽 */
+            gap: 10px;                          /* 网格间隙 */
+            margin-top: 15px;                   /* 顶部外边距 */
+        }
+
+        /* 按钮基础样式 */
+        .pet-btn {
+            padding: 8px;                       /* 内边距 */
+            background: white;                  /* 白色背景 */
+            border: 2px solid #e1e5e9;          /* 边框 */
+            border-radius: 6px;                 /* 圆角 */
+            font-size: 11px;                    /* 字体大小 */
+            cursor: pointer;                    /* 鼠标手型指针 */
+            transition: all 0.2s;               /* 所有属性过渡动画，0.2秒 */
+            text-align: center;                 /* 文字居中 */
+        }
+
+        /* 按钮悬停效果 */
+        .pet-btn:hover {
+            background: #f0f0f0;                /* 悬停时变为浅灰色 */
+        }
+
+        /* 响应式设计：屏幕宽度小于等于768px时应用 */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;                  /* 减少内边距 */
+            }
+            
+            .pet-panel {
+                width: 100%;                    /* 宽度自适应 */
+            }
+            
+            .pet-container {
+                min-height: 300px;              /* 减小最小高度 */
+            }
+        }
+    </style>
+</head>
+
+<!-- 文档主体 -->
+<body>
+    <!-- 小鸟助手主面板 -->
+    <div class="pet-panel">
+        <!-- 面板头部 -->
+        <div class="pet-header">
+            <h2>🐦 小鸟助手</h2>     <!-- 标题带小鸟表情 -->
+            <p>点击互动，拖拽移动</p> <!-- 操作提示 -->
+        </div>
+
+        <!-- 小鸟显示区域 -->
+        <div class="pet-container" id="petContainer">
+            {/* 小鸟将在这里显示 */} <!-- 注释：小鸟元素将通过JavaScript动态生成 -->
+        </div>
+
+        <!-- 控制区域 -->
+        <div class="pet-controls">
+            <h3 style="margin-bottom: 15px; color: #555; font-size: 14px;">小鸟控制</h3>
+            
+            <!-- 控制按钮组 -->
+            <div class="pet-btn-group">
+                <!-- 六个控制按钮，每个都有onclick事件 -->
+                <button class="pet-btn" onclick="feedBird()">🍪 喂食</button>
+                <button class="pet-btn" onclick="danceBird()">💃 跳舞</button>
+                <button class="pet-btn" onclick="sleepBird()">😴 睡觉</button>
+                <button class="pet-btn" onclick="wakeBird()">⏰ 叫醒</button>
+                <button class="pet-btn" onclick="changeBirdMood('happy')">😊 开心</button>
+                <button class="pet-btn" onclick="changeBirdMood('sad')">😢 难过</button>
+            </div>
+
+            <!-- 状态监控区域 -->
+            <div style="margin-top: 15px;">
+                <h4 style="font-size: 12px; color: #777; margin-bottom: 8px;">状态监控</h4>
+                <div id="birdStatus" style="font-size: 11px; color: #555;">
+                    <!-- 状态值将通过JavaScript动态更新 -->
+                    健康: <span id="healthBar">100%</span><br>
+                    快乐: <span id="happyBar">100%</span><br>
+                    能量: <span id="energyBar">100%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入小鸟桌宠的JavaScript模块 -->
+    <!-- 这些脚本应该按依赖顺序引入 -->
+    <script src="./pet/pet-core.js"></script>       <!-- 核心功能 -->
+    <script src="./pet/pet-behaviors.js"></script>  <!-- 行为逻辑 -->
+    <script src="./pet/pet-interactions.js"></script> <!-- 交互功能 -->
+    <script src="./pet/pet-messages.js"></script>   <!-- 消息系统 -->
+    <script src="./pet/pet-animations.js"></script> <!-- 动画效果 -->
+
+    <!-- 页面自定义JavaScript代码 -->
+    <script>
+        // ========== 全局变量 ==========
+        let petInstance = null; // 存储小鸟桌宠实例的全局变量
+
+        // ========== 页面初始化 ==========
+        // 当页面完全加载后执行
+        window.onload = function() {
+            initializeBirdPet(); // 初始化小鸟桌宠
+        };
+
+        // ========== 小鸟初始化函数 ==========
+        function initializeBirdPet() {
+            try {
+                // 创建小鸟桌宠实例
+                petInstance = new DesktopPet();
+                // 初始化配置
+                petInstance.init({
+                    containerId: 'petContainer', // 容器元素ID
+                    name: 'API助手',             // 小鸟名称
+                    size: 70,                    // 小鸟大小（像素）
+                    autoWander: true,            // 是否自动漫游
+                    mood: 'curious',             // 初始心情
+                    colors: {                    // 颜色配置
+                        body: '#FFCC00',         // 身体颜色（黄色）
+                        beak: '#FF9900',         // 鸟嘴颜色（橙黄色）
+                        eye: '#000000',          // 眼睛颜色（黑色）
+                        wing: '#FFAA00'          // 翅膀颜色（浅橙色）
+                    }
+                });
+
+                // 启动状态监控系统
+                startBirdStatusMonitor();
+
+                // 控制台输出成功信息
+                console.log('🐦 小鸟助手初始化成功');
+            } catch (error) {
+                // 捕获并处理初始化错误
+                console.error('小鸟初始化失败:', error);
+                // 在页面上显示错误信息
+                document.getElementById('petContainer').innerHTML = `
+                    <div style="text-align: center; padding: 50px; color: #666;">
+                        <p>小鸟助手加载失败</p>
+                        <p style="font-size: 12px;">${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // ========== 状态监控函数 ==========
+        function startBirdStatusMonitor() {
+            // 此函数应由外部脚本实现完整功能
+            // 这里只保留框架，实际状态监控逻辑在外部脚本中
+        }
+
+        // ========== 控制函数 ==========
+        // 这些函数将调用小鸟实例的对应方法
+
+        // 喂食功能
+        function feedBird() {
+            if (petInstance) {
+                petInstance.feed();     // 调用喂食方法
+                updateBirdStatus();     // 更新状态显示
+            }
+        }
+
+        // 跳舞功能
+        function danceBird() {
+            if (petInstance) {
+                petInstance.dance();    // 调用跳舞方法
+                updateBirdStatus();     // 更新状态显示
+            }
+        }
+
+        // 睡觉功能
+        function sleepBird() {
+            if (petInstance) {
+                petInstance.sleep();    // 调用睡觉方法
+                updateBirdStatus();     // 更新状态显示
+            }
+        }
+
+        // 叫醒功能
+        function wakeBird() {
+            if (petInstance) {
+                petInstance.wake();     // 调用叫醒方法
+                updateBirdStatus();     // 更新状态显示
+            }
+        }
+
+        // 改变心情功能
+        function changeBirdMood(mood) {
+            if (petInstance) {
+                petInstance.changeMood(mood); // 调用改变心情方法
+                updateBirdStatus();           // 更新状态显示
+            }
+        }
+
+        // ========== 状态更新函数 ==========
+        function updateBirdStatus() {
+            if (petInstance) {
+                // 获取小鸟当前状态
+                const status = petInstance.getStatus();
+                if (status) {
+                    // 更新页面上的状态显示
+                    document.getElementById('healthBar').textContent = `${status.health}%`;
+                    document.getElementById('happyBar').textContent = `${status.happy}%`;
+                    document.getElementById('energyBar').textContent = `${status.energy}%`;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
